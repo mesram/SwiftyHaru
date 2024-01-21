@@ -1,4 +1,4 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.9
 
 import PackageDescription
 
@@ -8,12 +8,15 @@ let package = Package(
         .library(name: "SwiftyHaru", targets: ["SwiftyHaru"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.1.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.12.0"),
     ],
     targets: [
         .target(name: "CLibPNG"),
         .target(name: "CLibHaru", dependencies: ["CLibPNG"]),
         .target(name: "SwiftyHaru", dependencies: ["CLibHaru"]),
-        .testTarget(name: "SwiftyHaruTests", dependencies: ["SwiftyHaru", "SnapshotTesting"])
+        .testTarget(name: "SwiftyHaruTests", dependencies: [
+            "SwiftyHaru",
+            .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+        ])
     ]
 )

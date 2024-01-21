@@ -52,6 +52,9 @@
 #ifndef PNGINFO_H
 #define PNGINFO_H
 
+/* Not sure why this is necessary, pngpriv includes pngstruct prior to this header, parallel compilation issue? */
+#include "pngstruct.h"
+
 struct png_info_def
 {
    /* The following are necessary for every PNG file */
