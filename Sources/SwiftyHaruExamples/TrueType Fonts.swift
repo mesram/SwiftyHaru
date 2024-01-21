@@ -9,12 +9,13 @@
     import SwiftyHaru
     import Foundation
 
+enum FontError: Error {
+    case fontNotFound
+}
+
+func trueTypeFontsDemo() throws -> PDFDocument {
     let document = PDFDocument()
 /*:
- 
- 
- 
-
  If we set `embedding` to `true`, the glyph data of the font will be
  embedded into the document, so even if you don't have that font
  installed on your system, the text will be displayed using that font.
@@ -30,9 +31,15 @@
 /*:
  Let's load our cool font.
  */
+    
+    guard let fontPath = Bundle.module.path(forResource: "Fonts/Megrim", ofType: "ttf") else {
+        throw FontError.fontNotFound
+    }
+    
     let detailFont = try document
-        .loadTrueTypeFont(from: Data(contentsOf: #fileLiteral(resourceName: "Megrim.ttf")),
-                          embeddingGlyphData: embedding)
+            .loadTrueTypeFont(from: Data(contentsOf: URL(fileURLWithPath: fontPath)),
+                              embeddingGlyphData: embedding)
+    
 /*:
  Draw the title:
  */
@@ -66,7 +73,7 @@
         context.fontSize = 30
         try context.show(text: sampleText, atX: 10, y: 29)
 
-        try context.page.width = context.textWidth(for: sampleText) + 40
+        context.page.width = context.textWidth(for: sampleText) + 40
 /*:
  Separate the different parts of the page with lines:
  */
@@ -84,11 +91,6 @@
                 .appendingLine(toX: context.page.width - 10, y: context.page.height - 85)
         )
     }
-
-/*:
- Save our document:
- */
-document.display()
-/*:
- [Previous page](@previous) • **[Table of contents](Table%20of%20contents)** • [Next page](@next)
- */
+    
+    return document
+}

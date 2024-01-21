@@ -6,6 +6,8 @@
  ([Original example that uses LibHaru](https://github.com/libharu/libharu/wiki/Examples#line_democ))
  */
     import SwiftyHaru
+
+func linesDemo() throws -> PDFDocument {
 /*:
  Firstly, we need to define some helper functions.
  */
@@ -44,7 +46,7 @@
         try context.show(text: label, atX: x, y: y - 10)
         return Path().appendingRectangle(x: x, y: y - 40, width: 220, height: 25)
     }
-/*: 
+/*:
  Then we setup our document.
  */
     let document = PDFDocument()
@@ -307,10 +309,6 @@
                                 endPoint: point3)
         )
     }
-/*:
- We need to save our document.
- */
-    document.display()
-/*:
-[Previous page](@previous) • **[Table of contents](Table%20of%20contents)** • [Next page](@next)
- */
+    
+    return document
+}

@@ -7,50 +7,53 @@
  */
 import SwiftyHaru
 import func Foundation.tan
-/*:
- Firstly, we need to define some helper functions.
- */
-let sampleTextShort  = "ABCabc123"
-let sampleTextLong   = "abcdefgABCDEFG123!#$%&+-@?"
-let sampleTextPhrase = "The quick brown fox jumps over the lazy dog."
 
-func showStripePattern(in context: DrawingContext, x: Float, y: Float) {
+func textDemo() throws -> PDFDocument {
 
-    context.strokeColor = #colorLiteral(red: 0, green: 0, blue: 0.5, alpha: 1)
-    context.lineWidth = 1
+    /*:
+     Firstly, we need to define some helper functions.
+     */
+    let sampleTextShort  = "ABCabc123"
+    let sampleTextLong   = "abcdefgABCDEFG123!#$%&+-@?"
+    let sampleTextPhrase = "The quick brown fox jumps over the lazy dog."
 
-    for iy in stride(from: 0 as Float, to: 50, by: 3) {
-        context.stroke(
-            Path()
-                .moving(toX: x, y: y + iy)
-                .appendingLine(toX: x + context.textWidth(for: sampleTextShort), y: y + iy)
-        )
+    func showStripePattern(in context: DrawingContext, x: Float, y: Float) {
+
+        context.strokeColor = #colorLiteral(red: 0, green: 0, blue: 0.5, alpha: 1)
+        context.lineWidth = 1
+
+        for iy in stride(from: 0 as Float, to: 50, by: 3) {
+            context.stroke(
+                Path()
+                    .moving(toX: x, y: y + iy)
+                    .appendingLine(toX: x + context.textWidth(for: sampleTextShort), y: y + iy)
+            )
+        }
+
+        context.lineWidth = 2.5
     }
 
-    context.lineWidth = 2.5
-}
+    func showDescription(in context: DrawingContext, x: Float, y: Float, text: String) throws {
+        let fontSize = context.fontSize
+        let fillColor = context.fillColor
 
-func showDescription(in context: DrawingContext, x: Float, y: Float, text: String) throws {
-    let fontSize = context.fontSize
-    let fillColor = context.fillColor
+        context.fillColor = .black
+        context.textRenderingMode = .fill
+        context.fontSize = 10
+        try context.show(text: text, atX: x, y: y - 12)
 
-    context.fillColor = .black
-    context.textRenderingMode = .fill
-    context.fontSize = 10
-    try context.show(text: text, atX: x, y: y - 12)
+        context.fontSize = fontSize
+        context.fillColor = fillColor
+    }
+    /*:
+     Then we setup our document.
+     */
+    let document = PDFDocument()
+    let pageTitle = "Text Demo"
 
-    context.fontSize = fontSize
-    context.fillColor = fillColor
-}
-/*:
- Then we setup our document.
- */
-let document = PDFDocument()
-let pageTitle = "Text Demo"
+    try document.setCompressionMode(to: .all)
 
-try document.setCompressionMode(to: .all)
-
-try document.addPage() { context in
+    try document.addPage() { context in
 
 /*:
  Let's draw the grid for convenience.
@@ -252,10 +255,5 @@ try document.addPage() { context in
     try context.show(text: sampleTextPhrase, atX: 60, y: 60)
 }
 
-/*:
- We need to save our document.
- */
-document.display()
-/*:
- [Previous page](@previous) • **[Table of contents](Table%20of%20contents)** • [Next page](@next)
- */
+    return document
+}
